@@ -16,9 +16,15 @@ export function RegisterPage() {
     company: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, isSignedIn } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  React.useEffect(() => {
+    if (isSignedIn) {
+      navigate('/dashboard');
+    }
+  }, [isSignedIn, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({

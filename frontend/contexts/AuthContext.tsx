@@ -9,6 +9,9 @@ interface AuthContextType {
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
+  isLoaded: boolean;
+  isSignedIn: boolean;
+  signOut: () => Promise<void>;
 }
 
 interface RegisterData {
@@ -91,6 +94,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem('auth_token');
   };
 
+  const signOut = async () => {
+    logout();
+  };
+
   const value = {
     user,
     token,
@@ -98,6 +105,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     register,
     logout,
     isLoading,
+    isLoaded: !isLoading,
+    isSignedIn: !!user,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
