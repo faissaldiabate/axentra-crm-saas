@@ -32,7 +32,7 @@ export const create = api<CreateLeadRequest, Lead>(
       updated_at: Date;
     }>`
       INSERT INTO leads (user_id, name, email, company, phone, source)
-      VALUES (${auth.userID}, ${req.name}, ${req.email}, ${req.company || null}, ${req.phone || null}, ${req.source || null})
+      VALUES (${parseInt(auth.userID)}, ${req.name}, ${req.email}, ${req.company || null}, ${req.phone || null}, ${req.source || null})
       RETURNING id, user_id, name, email, company, phone, source, status, score, last_activity, created_at, updated_at
     `;
 

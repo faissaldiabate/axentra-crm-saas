@@ -20,7 +20,7 @@ export const update = api<UpdateLeadRequest, Lead>(
     const auth = getAuthData()!;
 
     const existingLead = await leadsDB.queryRow`
-      SELECT id FROM leads WHERE id = ${req.id} AND user_id = ${auth.userID}
+      SELECT id FROM leads WHERE id = ${req.id} AND user_id = ${parseInt(auth.userID)}
     `;
 
     if (!existingLead) {
@@ -76,7 +76,7 @@ export const update = api<UpdateLeadRequest, Lead>(
       WHERE id = $${paramIndex} AND user_id = $${paramIndex + 1}
       RETURNING id, user_id, name, email, company, phone, source, status, score, last_activity, created_at, updated_at
     `;
-    params.push(req.id, auth.userID);
+    params.push(req.id, parseInt(auth.userID));
 
     const lead = await leadsDB.rawQueryRow<{
       id: number;

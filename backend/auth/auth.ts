@@ -1,10 +1,10 @@
-import { createClerkClient, verifyToken } from "@clerk/backend";
 import { Header, Cookie, APIError, Gateway } from "encore.dev/api";
 import { authHandler } from "encore.dev/auth";
 import { secret } from "encore.dev/config";
+import jwt from "jsonwebtoken";
+import { authDB } from "./db";
 
-const clerkSecretKey = secret("ClerkSecretKey");
-const clerkClient = createClerkClient({ secretKey: clerkSecretKey() });
+const jwtSecret = secret("JWTSecret");
 
 interface AuthParams {
   authorization?: Header<"Authorization">;
@@ -13,13 +13,8 @@ interface AuthParams {
 
 export interface AuthData {
   userID: string;
-  imageUrl: string;
-  email: string | null;
+  email: string;
 }
-
-const AUTHORIZED_PARTIES = [
-  "https://*.lp.dev",
-];
 
 const auth = authHandler<AuthParams, AuthData>(
   async (data) => {
@@ -29,16 +24,20 @@ const auth = authHandler<AuthParams, AuthData>(
     }
 
     try {
-      const verifiedToken = await clerkClient.verifyToken(token, {
-        authorizedParties: AUTHORIZED_PARTIES,
-        secretKey: clerkSecretKey(),
-      });
+      const decoded = jwt.verify(token, jwtSecret()) as { userId: number; email: string };
+      
+      // Verify user still exists in database
+      const user = await authDB.queryRow<{ id: number; email: string }>`
+        SELECT id, email FROM users WHERE id = ${decoded.userId}
+      `;
 
-      const user = await clerkClient.users.getUser(verifiedToken.sub);
+      if (!user) {
+        throw APIError.unauthenticated("user not found");
+      }
+
       return {
-        userID: user.id,
-        imageUrl: user.imageUrl,
-        email: user.emailAddresses[0]?.emailAddress ?? null,
+        userID: user.id.toString(),
+        email: user.email,
       };
     } catch (err) {
       throw APIError.unauthenticated("invalid token", err);

@@ -29,7 +29,7 @@ export const list = api<ListLeadsRequest, ListLeadsResponse>(
     const offset = (page - 1) * limit;
 
     let whereClause = "WHERE user_id = $1";
-    let params: any[] = [auth.userID];
+    let params: any[] = [parseInt(auth.userID)];
     let paramIndex = 2;
 
     if (req.status) {

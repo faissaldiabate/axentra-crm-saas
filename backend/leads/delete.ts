@@ -13,7 +13,7 @@ export const deleteLead = api<DeleteLeadRequest, void>(
     const auth = getAuthData()!;
 
     const result = await leadsDB.exec`
-      DELETE FROM leads WHERE id = ${req.id} AND user_id = ${auth.userID}
+      DELETE FROM leads WHERE id = ${req.id} AND user_id = ${parseInt(auth.userID)}
     `;
 
     // Note: We can't check affected rows with the current Encore.ts API

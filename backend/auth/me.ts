@@ -24,7 +24,7 @@ export const me = api<void, UserInfo>(
       company: string | null;
     }>`
       SELECT id, email, first_name, last_name, company
-      FROM users WHERE id = ${auth.userID}
+      FROM users WHERE id = ${parseInt(auth.userID)}
     `;
 
     if (!user) {

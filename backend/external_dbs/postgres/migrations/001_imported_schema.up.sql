@@ -1,5 +1,10 @@
-CREATE EXTENSION IF NOT EXISTS pg_graphql WITH SCHEMA graphql;
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA extensions;
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
-CREATE EXTENSION IF NOT EXISTS supabase_vault WITH SCHEMA vault;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
+-- Only include standard PostgreSQL extensions that are commonly available
+-- Install extensions in their default schemas (usually public)
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Removed Supabase-specific extensions and schema specifications:
+-- pg_graphql - Supabase GraphQL extension  
+-- supabase_vault - Supabase vault extension
+-- pg_stat_statements - requires superuser privileges and postgresql.conf changes
+-- WITH SCHEMA extensions - Supabase-specific schema

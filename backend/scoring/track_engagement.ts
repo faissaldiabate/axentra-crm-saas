@@ -19,7 +19,7 @@ export const trackEngagement = api<TrackEngagementRequest, void>(
 
     // Verify the lead belongs to the authenticated user
     const lead = await leadsDB.queryRow`
-      SELECT id FROM leads WHERE id = ${req.leadId} AND user_id = ${auth.userID}
+      SELECT id FROM leads WHERE id = ${req.leadId} AND user_id = ${parseInt(auth.userID)}
     `;
 
     if (!lead) {

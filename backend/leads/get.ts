@@ -28,7 +28,7 @@ export const get = api<GetLeadRequest, Lead>(
       updated_at: Date;
     }>`
       SELECT id, user_id, name, email, company, phone, source, status, score, last_activity, created_at, updated_at
-      FROM leads WHERE id = ${req.id} AND user_id = ${auth.userID}
+      FROM leads WHERE id = ${req.id} AND user_id = ${parseInt(auth.userID)}
     `;
 
     if (!lead) {
